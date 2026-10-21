@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GIWA Bridge — Bridge ETH to GIWA Sepolia</title>
+  <meta name="description" content="Bridge ETH from Ethereum Sepolia to GIWA Sepolia testnet using the official OptimismPortal contract." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Animated background blobs -->
+  <div class="bg-blob blob-1"></div>
+  <div class="bg-blob blob-2"></div>
+  <div class="bg-blob blob-3"></div>
+
+  <div class="page-wrapper">
+
+    <!-- Header -->
+    <header class="header">
+      <div class="logo">
+        <div class="logo-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="url(#g1)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <defs>
+              <linearGradient id="g1" x1="2" y1="2" x2="22" y2="22" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#a855f7"/>
+                <stop offset="1" stop-color="#06b6d4"/>
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+        <span class="logo-text">GIWA Bridge</span>
+      </div>
+      <button id="connectBtn" class="connect-btn">
+        <span id="connectBtnText">Connect Wallet</span>
+      </button>
+    </header>
+
+    <!-- Main card -->
+    <main class="main">
+      <div class="card">
+        <div class="card-inner">
+
+          <div class="card-title-row">
+            <h1 class="card-title">Bridge ETH</h1>
+            <div class="badge">Testnet</div>
+          </div>
+          <p class="card-subtitle">Sepolia → GIWA Sepolia via OptimismPortal</p>
+
+          <!-- From -->
+          <div class="chain-box from-box">
+            <div class="chain-label">
+              <span class="chain-dot dot-sepolia"></span>
+              <span>From — Ethereum Sepolia</span>
+            </div>
+            <div class="chain-balance" id="sepoliaBalance">
+              <span class="balance-icon">⟠</span>
+              <span id="sepoliaBalanceVal">—</span>
+              <span class="balance-unit">ETH</span>
+            </div>
+          </div>
+
+          <!-- Arrow -->
+          <div class="bridge-arrow">
+            <div class="arrow-line"></div>
+            <div class="arrow-icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                <path d="M12 5v14M5 12l7 7 7-7" stroke="url(#g2)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <defs>
+                  <linearGradient id="g2" x1="12" y1="5" x2="12" y2="19" gradientUnits="userSpaceOnUse">
+                    <stop stop-color="#a855f7"/>
+                    <stop offset="1" stop-color="#06b6d4"/>
+                  </linearGradient>
+                </defs>
+              </svg>
+            </div>
+          </div>
+
+          <!-- To -->
+          <div class="chain-box to-box">
+            <div class="chain-label">
+              <span class="chain-dot dot-giwa"></span>
+              <span>To — GIWA Sepolia</span>
+            </div>
+            <div class="chain-balance" id="giwaBalance">
+              <span class="balance-icon">⟠</span>
+              <span id="giwaBalanceVal">—</span>
+              <span class="balance-unit">ETH</span>
+            </div>
+          </div>
+
+          <!-- Amount input -->
+          <div class="input-group">
+            <label class="input-label" for="amountInput">Amount to Bridge</label>
+            <div class="input-wrapper">
+              <input
+                id="amountInput"
+                class="amount-input"
+                type="number"
+                placeholder="0.001"
+                min="0.0001"
+                step="0.001"
+              />
+              <div class="input-suffix">
+                <span class="eth-badge">ETH</span>
+                <button class="max-btn" id="maxBtn">MAX</button>
+              </div>
+            </div>
+            <div class="input-hint" id="inputHint">Min: 0.0001 ETH · Gas fee paid on Sepolia</div>
+          </div>
+
+          <!-- Bridge button -->
+          <button id="bridgeBtn" class="bridge-btn" disabled>
+            <span id="bridgeBtnText">Connect Wallet to Bridge</span>
+            <div class="btn-shimmer"></div>
+          </button>
+
+          <!-- Status area -->
+          <div class="status-area" id="statusArea" style="display:none;">
+            <div class="status-steps" id="statusSteps">
+              <div class="step" id="step1">
+                <div class="step-dot"></div>
+                <div class="step-content">
+                  <div class="step-title">Submit L1 deposit</div>
+                  <div class="step-desc" id="step1Desc">Waiting...</div>
+                </div>
+              </div>
+              <div class="step" id="step2">
+                <div class="step-dot"></div>
+                <div class="step-content">
+                  <div class="step-title">L1 confirmed</div>
+                  <div class="step-desc" id="step2Desc">Pending</div>
+                </div>
+              </div>
+              <div class="step" id="step3">
+                <div class="step-dot"></div>
+                <div class="step-content">
+                  <div class="step-title">GIWA credited</div>
+                  <div class="step-desc" id="step3Desc">Pending</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Error area -->
+          <div class="error-box" id="errorBox" style="display:none;"></div>
+
+        </div>
+      </div>
+
+      <!-- Info pills -->
+      <div class="info-pills">
+        <div class="pill">
+          <span class="pill-dot"></span>
+          Chain ID: 91342
+        </div>
+        <div class="pill">
+          <span class="pill-dot"></span>
+          OP Stack · ~2 min bridge
+        </div>
+        <div class="pill">
+          <span class="pill-dot"></span>
+          No bridge fee
+        </div>
+      </div>
+    </main>
+
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
